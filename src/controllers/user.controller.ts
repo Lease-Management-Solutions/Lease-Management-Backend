@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import User from '../models/User'
+import User, {UserType} from '../models/User'
+
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
@@ -67,4 +68,52 @@ export const getUserById = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Erro ao buscar o usuário', error });
     }
 };
+
+
+export const deleteUserById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            res.status(404).json({ message: "Usuário não encontrado" });
+            return;
+        }
+
+        res.status(200).json({ message: "Usuário excluído com sucesso" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro ao excluir o usuário", error });
+    }
+};
+
+export const updateUserById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password, role, avatar, status } = req.body;
+
+        const updateData: Partial<UserType> = {};
+
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (password) updateData.password = await bcrypt.hash(password, saltRounds);
+        if (role) updateData.role = role;
+        if (avatar) updateData.avatar = avatar;
+        if (status) updateData.status = status;
+
+        const user = await User.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!user) {
+            res.status(404).json({ message: "Usuário não encontrado" });
+            return;
+        }
+
+        res.status(200).json({ message: "Usuário atualizado com sucesso", user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro ao atualizar o usuário", error });
+    }
+};
+
 

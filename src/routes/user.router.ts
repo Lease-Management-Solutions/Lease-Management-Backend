@@ -1,14 +1,18 @@
 import express from 'express'
-import { addUser, users, getUserById } from '../controllers/user.controller';
+import { addUser, users, getUserById, deleteUserById, updateUserById } from '../controllers/user.controller';
 
 
-const router = express.Router();                                //cria um roteador
+const router = express.Router();                                
 
-router.get('/', users);
-router.get('/:id', getUserById);
+router.post('/', addUser );                                     
+
+router.get('/', users);                                         
+router.get('/:id', getUserById);                                
+
+router.put('/:id', updateUserById);                             
+
+router.delete('/:id', deleteUserById);                          
 
 
-
-router.post('/', addUser );
 
 export default router;
