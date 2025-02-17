@@ -1,25 +1,23 @@
-import { Schema, model, connection } from 'mongoose'
+import { Schema, model, connection, Document, Model } from 'mongoose';
 
-type UserType = {
-    email: string,
-    age: number,
-    interests: [string],
-    name: {
-        firstName: string,
-        lastName: string
-    }
+interface UserType extends Document {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
 }
 
-const schema = new Schema<UserType> ({
-    email: String,
-    age: Number,
-    interests: [String],
-    name: {
-        firstName: String,
-        lastName: String
-    }
+const schema = new Schema<UserType>({
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    role: { type: String, required: true }
 });
 
-const modelName: string = 'User';
+const modelName = 'User';
 
-export default (connection && connection.models[modelName]) ?connection && connection.models[modelName] : model<UserType>(modelName, schema);
+const User: Model<UserType> = connection.models[modelName] 
+    ? connection.models[modelName] as Model<UserType>
+    : model<UserType>(modelName, schema);
+
+export default User;
