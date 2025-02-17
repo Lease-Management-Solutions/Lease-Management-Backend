@@ -1,19 +1,24 @@
 import { Request, Response } from "express";
-import User from "../models/User"; 
+import bcrypt from "bcrypt";
+import User from "../models/User";
 
 export const login = async (req: Request, res: Response) => {
-    try {
-        const newUser = new User({
-            "name": "willians henrique",
-            "email": "teste@teste.com",
-            "password": "123",
-            "role": "superUsuario"
-        });
+    if (req.body.email && req.body.password) {
+        let email: string = req.body.email;
+        let password: string = req.body.password;
 
-        await newUser.save(); // Salva o novo usuário no banco de dados
-        res.status(201).json({ message: 'Usuário criado com sucesso!', user: newUser });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro ao criar o usuário', error });
+        // Procura o usuário pelo email
+        let user = await User.findOne({ email });
+
+        if (user) {
+            // Compara a senha fornecida com a senha armazenada no banco
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+
+            if (isPasswordValid) {
+                res.json({ status: true });
+                return;
+            }
+        }
     }
+    res.status(400).json({ status: false });
 };
