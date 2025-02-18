@@ -23,6 +23,6 @@ server.use(errorHandler);                                       // route for api
 
 
 const PORT_SERVER = process.env.PORT
-server.listen (PORT_SERVER || 3000, () => {                     // starts the server on port 3000
+server.listen (PORT_SERVER || 2000, () => {                     // starts the server on port 3000
     console.log(`Servidor rodando em localhost:${PORT_SERVER}/`);
 });
