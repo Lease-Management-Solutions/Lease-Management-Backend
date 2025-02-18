@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import JWT from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import User from "../models/User";
 
+dotenv.config();
 export const login = async (req: Request, res: Response) => {
     if (req.body.email && req.body.password) {
         let email: string = req.body.email;
@@ -15,7 +18,14 @@ export const login = async (req: Request, res: Response) => {
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (isPasswordValid) {
-                res.json({ status: true });
+                const token = JWT.sign(
+                    { id: user.id, role: user.role },
+                    process.env.JWT_SECRET_KEY as string,
+                    { expiresIn: '6h' }
+                );
+
+
+                res.json({ status: true, token });
                 return;
             }
         }
