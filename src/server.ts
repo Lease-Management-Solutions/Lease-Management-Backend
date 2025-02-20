@@ -1,10 +1,12 @@
 import express from 'express'
 import helmet from 'helmet';
 import path from 'path';
-import dotenv from 'dotenv'
-import mainRouter from './routes/main.router'
-import {mongoConnect} from './database/connectMongo'
+import dotenv from 'dotenv';
+import cors from 'cors';
+import mainRouter from './routes/main.router';
+import {mongoConnect} from './database/connectMongo';
 import { errorHandler, notFoundRequest } from './routes/errorHandler.router';
+import {initializeAdminUser} from './database/initializeAdminUser'
 
 dotenv.config();
 mongoConnect();
@@ -12,6 +14,7 @@ mongoConnect();
 const server = express();                                       // instance of a server
 
 server.use(helmet());                                           // adding helmet for server protection
+server.use(cors());
 server.use(express.json());                                     // configures the response header to be json 
 server.use(express.urlencoded({extended: true}));               // extends express functions, we can get data for any type of request
                                                                 
@@ -21,6 +24,8 @@ server.use('/', mainRouter);                                    // accesses the 
 server.use(notFoundRequest);                                    // route for not found
 server.use(errorHandler);                                       // route for api request errors
 
+  
+initializeAdminUser();                                          // create user admin as SuperUsuario 
 
 const PORT_SERVER = process.env.PORT
 server.listen (PORT_SERVER || 2000, () => {                     // starts the server on port 3000
