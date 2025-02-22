@@ -3,6 +3,7 @@ import User, {UserType} from '../models/User'
 import JWT from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import { REFUSED } from "dns";
 
 dotenv.config();
 
@@ -89,40 +90,14 @@ export const deleteUserById = async (req: Request, res: Response) => {
     }
 };
 
-export const updateUserById = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { name, email, password, role, avatar, status } = req.body;
-
-        const updateData: Partial<UserType> = {};
-
-        if (name) updateData.name = name;
-        if (email) updateData.email = email;
-        if (password) updateData.password = await bcrypt.hash(password, saltRounds);
-        if (role) updateData.role = role;
-        if (avatar) updateData.avatar = avatar;
-        if (status) updateData.status = status;
-
-        const user = await User.findByIdAndUpdate(id, updateData, { new: true });
-
-        if (!user) {
-            res.status(404).json({ message: "Usuário não encontrado" });
-            return;
-        }
-
-        res.status(200).json({ message: "Usuário atualizado com sucesso", user });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao atualizar o usuário", error });
-    }
-};
 
 export const changePassword = async (req: Request, res: Response) => {
     const { newPassword } = req.body;
     const token = req.headers.authorization?.split(' ')[1];  // Token no formato "Bearer <token>"
 
     if (!token || !newPassword) {
-        return res.status(400).json({ error: "Token and new password are required" });
+        res.status(400).json({ error: "Token and new password are required" });
+        return;
     }
 
     try {
@@ -158,3 +133,50 @@ export const changePassword = async (req: Request, res: Response) => {
     }
 };
 
+export const changePasswordById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const  newpassword  = "trocar"; 
+  
+   
+      const hashedPassword = await bcrypt.hash(newpassword, saltRounds); 
+  
+      const user = await User.findById(id);
+  
+      if (!user) {
+         res.status(404).json({ message: "Usuário não encontrado" });
+         return;
+      }
+  
+      user.password = hashedPassword;
+      user.mustChangePassword = true; // Define mustChangePassword como true
+      await user.save();
+  
+      res.status(200).json({ message: "Senha do usuário atualizada com sucesso", user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erro ao atualizar a senha do usuário", error });
+    }
+  };
+
+  export const toggleUserStatus = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+  
+      if (!user) {
+        res.status(404).json({ message: "Usuário não encontrado" });
+        return ;
+      }
+  
+      // Alterna o status entre 'active' e 'inactive'
+      user.status = user.status === 'active' ? 'inactive' : 'active';
+      
+      await user.save();
+  
+      res.status(200).json({ message: "Status do usuário alterado com sucesso", user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erro ao alterar o status do usuário", error });
+    }
+  };
