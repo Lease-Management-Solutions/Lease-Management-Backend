@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import User, {UserType} from '../models/User'
-
+import JWT from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
@@ -18,12 +18,13 @@ export const addUser = async (req: Request, res: Response) => {
 
         // Cria o usuário
         const newUser = new User();
-            newUser.name = name,
-            newUser.email = email,
-            newUser. password = hashedPassword,
-            newUser.role = role
-            newUser.avatar = avatar
-            newUser.status = 'active'
+            newUser.name = name;
+            newUser.email = email;
+            newUser. password = hashedPassword;
+            newUser.role = role;
+            newUser.avatar = avatar;
+            newUser.status = 'active';
+            newUser.mustChangePassword = true;
         
         // Salva o novo usuário no banco de dados
         await newUser.save(); 
@@ -116,4 +117,44 @@ export const updateUserById = async (req: Request, res: Response) => {
     }
 };
 
+export const changePassword = async (req: Request, res: Response) => {
+    const { newPassword } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];  // Token no formato "Bearer <token>"
+
+    if (!token || !newPassword) {
+        return res.status(400).json({ error: "Token and new password are required" });
+    }
+
+    try {
+        // Verifica e decodifica o token
+        JWT.verify(token, process.env.JWT_SECRET_KEY as string, async (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ error: "Invalid or expired token" });
+            }
+
+            // Pega o email do token
+            const email = (decoded as any).email;
+
+            // Encontra o usuário pelo email
+            const user = await User.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            // Criptografa a nova senha
+            const hashedPassword = await bcrypt.hash(newPassword, 10); // A chave de salt pode ser configurada
+
+            // Atualiza a senha no banco de dados
+            user.password = hashedPassword;
+            user.mustChangePassword = false;  // Desmarca a necessidade de trocar a senha
+            await user.save();
+
+            res.status(200).json({ message: "Password updated successfully" });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 

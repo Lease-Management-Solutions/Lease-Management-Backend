@@ -7,6 +7,7 @@ interface UserType extends Document {
     role: "Corretor" | "Administrativo" | "Financeiro" | "SuperUsuario";
     avatar?: string;
     status: "active" | "inactive";
+    mustChangePassword: boolean;
     
 }
 
@@ -18,7 +19,8 @@ const schema = new Schema<UserType>({
     password: { type: String, required: true },
     role: { type: String, required: true, enum: ["Corretor", "Administrativo", "Financeiro", "SuperUsuario"] },
     avatar: { type: String },
-    status: { type: String, enum: ["active", "inactive"], default: "active" } 
+    status: { type: String, enum: ["active", "inactive"], default: "active" }, 
+    mustChangePassword: {type: Boolean, default: true}
 
 });
 

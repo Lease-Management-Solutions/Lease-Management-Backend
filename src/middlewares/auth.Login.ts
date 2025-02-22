@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction} from 'express';
 import JWT, { JwtPayload }  from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import User from "../models/User";
 
 dotenv.config();
 
@@ -41,3 +42,4 @@ export const authLogin = {
         }
     }
 }
+
