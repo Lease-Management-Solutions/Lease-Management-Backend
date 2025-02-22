@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Lease-Management-Solutions/Lease-Management-Backend#readme",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/helmet": "^0.0.48",
     "@types/jsonwebtoken": "^9.0.8",
