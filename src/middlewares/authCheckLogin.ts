@@ -20,7 +20,11 @@ export const checkMustChangePassword = async (req: Request, res: Response, next:
             res.status(401).json({ error: "Invalid credentials" });
             return;
         }
-
+        if (user.status !== "active") {
+            res.status(403).json({ error: "Usuário desativado" });
+            return;
+        }
+        
         if (user.mustChangePassword) {
             const tempToken = JWT.sign(
                 { email: user.email },
