@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import User, {UserType} from '../models/User'
+import User from '../models/User'
 import JWT from 'jsonwebtoken';
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { REFUSED } from "dns";
+
 
 dotenv.config();
 

@@ -1,14 +1,15 @@
 import {Request, Response, NextFunction} from 'express';
 import JWT  from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import User from "../models/User";
 
 dotenv.config();
 
 export const checkMustChangePassword = async (req: Request, res: Response, next: NextFunction) => {
-    const { email } = req.body;
+    const { email, password} = req.body;
 
-    if (!email) {
+    if (!email || !password) {
         res.status(400).json({ error: "Email is required" });
         return;
     }
@@ -20,6 +21,13 @@ export const checkMustChangePassword = async (req: Request, res: Response, next:
             res.status(401).json({ error: "Invalid credentials" });
             return;
         }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Incorrect password" });
+        }
+
         if (user.status !== "active") {
             res.status(403).json({ error: "Usuário desativado" });
             return;
@@ -35,7 +43,7 @@ export const checkMustChangePassword = async (req: Request, res: Response, next:
             return;
         }
 
-        await next();
+        next();
     } catch (err) {
         res.status(500).json({ error: "Internal server error" });
     }
