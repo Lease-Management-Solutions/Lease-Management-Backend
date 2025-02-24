@@ -13,24 +13,47 @@ export const addUser = async (req: Request, res: Response) => {
 
     try {
         
-        const { name, email, password, role, avatar } = req.body;
+        const { 
+                name, cpf, rg, issuingAuthority, rgIssuingState, address, email, password, maritalStatus, role, 
+                nationality, avatar, createdAt, createdBy, updatedAt, updatedBy
+            } = req.body
+        ;
+
+        if (!password) {
+            res.status(400).json({ message: 'A senha é obrigatória.' });
+            return;
+        }
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);          // Criptografa a senha
 
         // Cria o usuário
         const newUser = new User();
             newUser.name = name;
+            newUser.cpf = cpf;
+            newUser.rg = rg;
+            newUser.issuingAuthority = issuingAuthority;
+            newUser.rgIssuingState = rgIssuingState;
+            newUser.address = address;
             newUser.email = email;
-            newUser. password = hashedPassword;
+            newUser.password = hashedPassword;
+            newUser.maritalStatus = maritalStatus;
             newUser.role = role;
+            newUser.nationality = nationality;
             newUser.avatar = avatar;
             newUser.status = 'active';
             newUser.mustChangePassword = true;
-        
-        // Salva o novo usuário no banco de dados
+            newUser.createdAt = createdAt;
+            newUser.createdBy = createdBy;
+            newUser.updatedAt = updatedAt;
+            newUser.updatedBy = updatedBy;
+
         await newUser.save(); 
         res.status(201).json({ message: 'Usuário criado com sucesso!', user: newUser });
-    } catch (error) {
+    } catch (error:any) {
+        if (error.code === 11000) {
+            res.status(400).json({ message: 'Email já cadastrado.' });
+            return;
+        }
         console.error(error);
         res.status(500).json({ message: 'Erro ao criar o usuário', error });
     }
