@@ -15,7 +15,7 @@ export const addUser = async (req: Request, res: Response) => {
         
         const { 
                 name, cpf, rg, issuingAuthority, rgIssuingState, address, email, password, maritalStatus, role, 
-                nationality, avatar, createdAt, createdBy, updatedAt, updatedBy
+                nationality, avatar, createdAt, createdBy, updatedAt, updatedBy, phones
             } = req.body
         ;
 
@@ -46,6 +46,7 @@ export const addUser = async (req: Request, res: Response) => {
             newUser.createdBy = createdBy;
             newUser.updatedAt = updatedAt;
             newUser.updatedBy = updatedBy;
+            newUser.phones = phones;
 
         await newUser.save(); 
         res.status(201).json({ message: 'Usuário criado com sucesso!', user: newUser });

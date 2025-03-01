@@ -9,6 +9,12 @@ interface Address {
     country: string;  
 }
 
+interface Phone {
+    type: "mobile" | "home" | "work";
+    number: string;
+}
+
+
 interface UserType extends Document {
     name: string;
     cpf: string;
@@ -28,6 +34,7 @@ interface UserType extends Document {
     createdBy: string;
     updatedAt: Date;
     updatedBy: string;
+    phones?: Phone[];
 }
 
 export { UserType };
@@ -41,6 +48,12 @@ const AddressSchema = new Schema<Address>({
     state: { type: String, required: true },  
     country: { type: String, required: true }  
 });
+
+const PhoneSchema = new Schema<Phone>({
+    type: { type: String, enum: ["mobile", "home", "work"], required: true },
+    number: { type: String, required: true }
+});
+
 
 const schema = new Schema<UserType>({
     name: { type: String, required: true },
@@ -60,9 +73,10 @@ const schema = new Schema<UserType>({
     createdAt: { type: Date, default: Date.now },
     createdBy: { type: String, required: true },
     updatedAt: { type: Date, default: Date.now },
-    updatedBy: { type: String, required: true }
+    updatedBy: { type: String, required: true },
+    phones: { type: [PhoneSchema], required: false }
 
-});
+}, { timestamps: true });
 
 const modelName = 'User';
 

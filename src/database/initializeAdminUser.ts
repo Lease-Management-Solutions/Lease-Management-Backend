@@ -38,7 +38,14 @@ export async function initializeAdminUser() {
             issuingAuthority:"000/00",
             rgIssuingState: "SP",
             maritalStatus: "Single",
-            nationality: "Default Nationality"
+            nationality: "Default Nationality",
+            phones: 
+            [ 
+                {
+                "type": "mobile",
+                "number": "11987654321"
+                }
+            ]
         });
 
         console.log(`Usuário ${name} criado com sucesso.`);
