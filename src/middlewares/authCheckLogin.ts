@@ -25,7 +25,8 @@ export const checkMustChangePassword = async (req: Request, res: Response, next:
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.status(401).json({ error: "Incorrect password" });
+            res.status(401).json({ error: "Incorrect password" });
+            return;
         }
 
         if (user.status !== "active") {
