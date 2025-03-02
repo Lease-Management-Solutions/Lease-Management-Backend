@@ -60,6 +60,60 @@ export const addUser = async (req: Request, res: Response) => {
     }
 };
 
+export const updateUserById = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const {
+        name,
+        cpf,
+        rg,
+        issuingAuthority,
+        rgIssuingState,
+        address,
+        email,
+        maritalStatus,
+        role,
+        nationality,
+        avatar,
+        status,
+        updatedAt,
+        updatedBy,
+        phones
+      } = req.body;
+  
+      const user = await User.findById(id);
+  
+      if (!user) {
+        res.status(404).json({ message: "Usuário não encontrado" });
+        return;
+      }
+  
+      user.name = name ?? user.name;
+      user.cpf = cpf ?? user.cpf;
+      user.rg = rg ?? user.rg;
+      user.issuingAuthority = issuingAuthority ?? user.issuingAuthority;
+      user.rgIssuingState = rgIssuingState ?? user.rgIssuingState;
+      user.address = address ?? user.address;
+      user.email = email ?? user.email;
+      user.maritalStatus = maritalStatus ?? user.maritalStatus;
+      user.role = role ?? user.role;
+      user.nationality = nationality ?? user.nationality;
+      user.avatar = avatar ?? user.avatar;
+      user.status = status ?? user.status;
+      user.updatedAt = updatedAt;
+      user.updatedBy = updatedBy;
+      user.phones = phones ?? user.phones;
+  
+      await user.save();
+  
+      res.status(200).json({ message: "Usuário atualizado com sucesso!", user });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erro ao atualizar o usuário", error });
+    }
+  };
+  
+
 export const users = async (req: Request, res: Response) => {
     try {
         const { status } = req.query;
