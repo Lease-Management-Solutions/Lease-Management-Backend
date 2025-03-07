@@ -17,9 +17,8 @@ interface Phone {
 
 // Definindo a interface para o modelo de Pessoa (Person)
 interface Role {
-    role: "locatario" | "locador" | "fiador" | "fornecedora" | "devedora";
-    contractId?: string; 
-    percent?: number;
+    role: "locatario" | "locador" | "fiador" | "fornecedor" | "devedor";
+    contractId?: string;
 }
 
 interface PersonType extends Document {
@@ -29,12 +28,14 @@ interface PersonType extends Document {
     issuingAuthority: string;
     rgIssuingState: string;
     address: Address;
-    email: string;
+    email?: string;
     maritalStatus: "Single" | "Married" | "Divorced" | "Widowed" | "Legally Separated" | "Stable Union";
     nationality: string;
     roles: Role[]; // Array de papéis associados a contratos diferentes
     createdAt: Date;
+    createdBy: string;
     updatedAt: Date;
+    updatedBy: string;
     phones?: Phone[];
 }
 
@@ -73,12 +74,13 @@ const schema = new Schema<PersonType>({
     roles: [
         { 
             role: { type: String, enum: ["locatario", "locador", "fiador", "fornecedora", "devedora"], required: true },
-            contractId: { type: String, required: function(this: any) { return this.role !== 'fornecedora' && this.role !== 'devedora'; } }, // Tornando opcional para fornecedora e devedora
-            percent: { type: Number, required: function(this: any) { return this.role === 'locatario' || this.role === 'locador' || this.role === 'fiador'; } } // Percentual obrigatório apenas para papéis relacionados a contrato
-        }
+            contractId: { type: String, required: false}, 
+           }
     ],
     createdAt: { type: Date, default: Date.now },
+    createdBy: { type: String, required: true },
     updatedAt: { type: Date, default: Date.now },
+    updatedBy: { type: String, required: true },
     phones: { type: [PhoneSchema], required: false }
 }, { timestamps: true });
 
