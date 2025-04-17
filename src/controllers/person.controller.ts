@@ -1,21 +1,12 @@
 import { Request, Response } from "express";
-import User from '../models/User'
 import Person from '../models/Person'
-import JWT from 'jsonwebtoken';
-import bcrypt from "bcrypt";
-import dotenv from "dotenv";
-
-
-dotenv.config();
-
-const saltRounds = parseInt(process.env.SALT_ROUNDS || "10");
 
 
 export const addPerson = async (req: Request, res: Response) => {
     try {
         const {
-            name, cpf, rg, issuingAuthority, rgIssuingState, address, email, maritalStatus, 
-            nationality, roles, createdAt, createdBy, updatedAt, updatedBy, phones
+            name, cpf, rg, issuingAuthority, rgIssuingState, address, maritalStatus, 
+            nationality, roles, createdAt, createdBy, updatedAt, updatedBy, contact
         } = req.body;
 
         console.log(req.body);  // Verifique os valores que estão sendo passados
@@ -35,7 +26,6 @@ export const addPerson = async (req: Request, res: Response) => {
             issuingAuthority,
             rgIssuingState,
             address,
-            email,
             maritalStatus,
             nationality,
             roles,
@@ -43,7 +33,7 @@ export const addPerson = async (req: Request, res: Response) => {
             createdBy,
             updatedAt,
             updatedBy,
-            phones
+            contact
         });
 
         await newPerson.save();
@@ -65,7 +55,6 @@ export const updatePersonById = async (req: Request, res: Response) => {
             issuingAuthority,
             rgIssuingState,
             address,
-            email,
             maritalStatus,
             nationality,
             roles,
@@ -73,7 +62,7 @@ export const updatePersonById = async (req: Request, res: Response) => {
             createdBy,
             updatedAt,
             updatedBy,
-            phones
+            contact
         } = req.body;
 
         const person = await Person.findById(id);
@@ -83,14 +72,6 @@ export const updatePersonById = async (req: Request, res: Response) => {
             return;
         }
 
-         // Verifica se o email já está sendo usado por outra pessoa
-         if (email && email !== person.email) {
-            const emailExists = await Person.findOne({ email });
-            if (emailExists) {
-                res.status(400).json({ message: "Este e-mail já está em uso." });
-                return;
-            }
-        }
         
         person.name = name ?? person.name;
         person.cpf = cpf ?? person.cpf;
@@ -98,7 +79,6 @@ export const updatePersonById = async (req: Request, res: Response) => {
         person.issuingAuthority = issuingAuthority ?? person.issuingAuthority;
         person.rgIssuingState = rgIssuingState ?? person.rgIssuingState;
         person.address = address ?? person.address;
-        person.email = email ?? person.email;
         person.maritalStatus = maritalStatus ?? person.maritalStatus;
         person.nationality = nationality ?? person.nationality;
         person.roles = roles ?? person.roles;
@@ -106,7 +86,7 @@ export const updatePersonById = async (req: Request, res: Response) => {
         person.createdBy = createdBy ?? person.createdBy;
         person.updatedAt = updatedAt ?? person.updatedAt;
         person.updatedBy = updatedBy ?? person.updatedBy;
-        person.phones = phones ?? person.phones;
+        person.contact = contact ?? person.contact;
 
         await person.save();
 

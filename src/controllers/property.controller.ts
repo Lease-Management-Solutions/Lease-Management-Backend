@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import Property from '../models/property'
+import Property from '../models/Property'
 
 
 export const addProperty = async (req: Request, res: Response) => {
