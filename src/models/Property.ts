@@ -4,11 +4,12 @@ interface Address {
     street: string;
     number: string;
     neighborhood: string;
+    additionalData?: string;
     city: string;
     state: string;
     country: string;
 }
-
+ 
 type PropertyTypeEnum =
     | "casa"
     | "apartamento"
@@ -74,6 +75,7 @@ const AddressSchema = new Schema<Address>({
     number: { type: String, required: true },
     neighborhood: { type: String, required: true },
     city: { type: String, required: true },
+    additionalData: { type: String, required: false},
     state: { type: String, required: true },
     country: { type: String, required: true }
 });
