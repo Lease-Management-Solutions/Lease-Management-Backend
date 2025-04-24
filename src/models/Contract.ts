@@ -25,6 +25,13 @@ enum AdjustmentIndexEnum {
   IPCA = "IPCA"
 }
 
+enum GuaranteeTypeEnum {
+  Caucao = "Caução",
+  SeguroFianca = "Seguro fiança",
+  Fiador = "Fiador",
+  SemGarantia = "Sem garantia"
+}
+
 interface TenantInfo {
   id_locatario: Types.ObjectId; // Referência ao locatário
   startDate: Date;
@@ -33,9 +40,10 @@ interface TenantInfo {
 }
 
 interface GuaranteeInfo {
-  id_garantia: Types.ObjectId; // Referência à garantia
+  id_garantia: Types.ObjectId;
+  type: GuaranteeTypeEnum;
   startDate: Date;
-  endDate?: Date | null; // Null se ainda for garantia
+  endDate?: Date | null;
 }
 
 interface RentAdjustment {
@@ -86,6 +94,7 @@ const TenantSchema = new Schema<TenantInfo>({
 
 const GuaranteeSchema = new Schema<GuaranteeInfo>({
   id_garantia: { type: Schema.Types.ObjectId, ref: 'Guarantee', required: true },
+  type: { type: String, enum: Object.values(GuaranteeTypeEnum), required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, default: null },
 });
