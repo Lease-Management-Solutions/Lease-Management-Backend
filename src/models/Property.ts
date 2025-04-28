@@ -69,7 +69,6 @@ interface PropertyType extends Document {
     updatedBy: string;
 }
 
-
 const AddressSchema = new Schema<Address>({
     street: { type: String, required: true },
     number: { type: String, required: true },
@@ -94,22 +93,7 @@ const OwnerSchema = new Schema<OwnerInfo>({
 });
 
 
-interface PropertyType extends Document {
-    address: Address;
-    type: PropertyTypeEnum;
-    contracts: ContractInfo[];
-    owners: OwnerInfo[];
-    condominiumId?: Types.ObjectId;
-    waterCode?: string;
-    energyCode?: string;
-    iptuCode?: string;
-    registrationNumber?: string;
-    attachments: Attachment[]; // Agora é um array de objetos identificáveis
-    createdAt: Date;
-    createdBy: string;
-    updatedAt: Date;
-    updatedBy: string;
-}
+
 
 const AttachmentSchema = new Schema<Attachment>({
     type: { type: String, enum: ["matricula", "agua", "energia", "iptu"], required: true },
