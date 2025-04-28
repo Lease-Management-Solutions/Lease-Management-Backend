@@ -94,7 +94,6 @@ const TenantSchema = new Schema<TenantInfo>({
 
 const GuaranteeSchema = new Schema<GuaranteeInfo>({
   id_garantia: { type: Schema.Types.ObjectId, ref: 'Guarantee', required: true },
-  type: { type: String, enum: Object.values(GuaranteeTypeEnum), required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, default: null },
 });
