@@ -40,7 +40,7 @@ interface TenantInfo {
 }
 
 interface GuaranteeInfo {
-  id_garantia: Types.ObjectId;
+  _id: Types.ObjectId;
   type: GuaranteeTypeEnum;
   startDate: Date;
   endDate?: Date | null;
@@ -93,7 +93,7 @@ const TenantSchema = new Schema<TenantInfo>({
 });
 
 const GuaranteeSchema = new Schema<GuaranteeInfo>({
-  id_garantia: { type: Schema.Types.ObjectId, ref: 'Guarantee', required: true },
+  _id: { type: Schema.Types.ObjectId, ref: 'Guarantee', required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, default: null },
 });
