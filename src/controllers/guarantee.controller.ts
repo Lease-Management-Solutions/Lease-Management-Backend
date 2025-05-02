@@ -3,7 +3,7 @@ import Garantee, { GuaranteeTypeEnum } from "../models/Garantee";
 import mongoose from "mongoose";
 import Contract from "../models/Contract";
 
-export const addGarantee = async (req: Request, res: Response) => {
+export const addGuarantee = async (req: Request, res: Response) => {
     try {
       const {
         type,
@@ -17,10 +17,11 @@ export const addGarantee = async (req: Request, res: Response) => {
   
       // Valida o tipo de garantia
       if (!Object.values(GuaranteeTypeEnum).includes(type)) {
+        console.error('Tipo de garantia inválido:', type);
         res.status(400).json({ message: "Tipo de garantia inválido." });
         return;
       }
-  
+      console.log('Requisição recebida no /guarantee:', req.body);
       // Validação por tipo
       switch (type) {
         case GuaranteeTypeEnum.Fiador:
@@ -77,8 +78,8 @@ export const addGarantee = async (req: Request, res: Response) => {
         contractId: validatedContractId,
       });
   
-      await newGarantee.save();
-      res.status(201).json({ message: "Garantia adicionada com sucesso!", garantee: newGarantee });
+      const savedGuarantee = await newGarantee.save();
+      res.status(201).json({ message: "Garantia adicionada com sucesso!", garantee: savedGuarantee });
   
     } catch (error: any) {
       console.error(error);
@@ -87,22 +88,22 @@ export const addGarantee = async (req: Request, res: Response) => {
   };
   
 
-export const getAllGarantees = async (req: Request, res: Response) => {
+export const getAllGuarantees = async (req: Request, res: Response) => {
 
 
 }
 
-export const getGaranteeById = async (req: Request, res: Response) => {
+export const getGuaranteeById = async (req: Request, res: Response) => {
 
 
 }
 
-export const updateGaranteeById = async (req: Request, res: Response) => {
+export const updateGuaranteeById = async (req: Request, res: Response) => {
 
 
 }
 
-export const deleteGaranteeById = async (req: Request, res: Response) => {
+export const deleteGuaranteeById = async (req: Request, res: Response) => {
 
 
 }

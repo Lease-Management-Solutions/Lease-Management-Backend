@@ -5,7 +5,7 @@ import authRouter from './auth.router'
 import personRouter from './person.router'
 import propertyRouter from './property.router'
 import contractRouter from './contract.router'
-import garanteeRouter from './garantee.router'
+import guaranteeRouter from './guarantee.router'
 
 const router = express.Router();                            //cria um roteador
 
@@ -15,7 +15,7 @@ router.use('/auth', authRouter);                            // /auth/ acessa a r
 router.use('/person', personRouter);                        // /person/ acessa a rota de pessoas do sistema
 router.use('/property', propertyRouter);                    // /property/ acessa a rota de imóveis do sistema
 router.use('/contract', contractRouter);                    // /property/ acessa a rota de imóveis do sistema
-router.use('/garantee', garanteeRouter);                    // /garantee/ acessa a rota de garantias
+router.use('/guarantee', guaranteeRouter);                    // /guarantee/ acessa a rota de garantias
 
                                                             
 router.get('/', (req, res)=> {
